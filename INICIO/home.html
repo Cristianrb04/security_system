@@ -3,126 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Page</title>
+    <title>Galería desde Base de Datos</title>
     <style>
         body {
-            margin: 0;
             font-family: Arial, sans-serif;
-            background-color: white;
-        }
-        nav {
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            padding: 1rem 0;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 1rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        nav a:hover {
-            color: #22aaff;
-        }
-        .content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             text-align: center;
-            padding: 2rem;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
         }
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            margin: 20px;
+            color: #333;
         }
-        .image-container img {
-            max-width: 100%;
-            height: auto;
+        #image-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 10px;
+        }
+        img {
+            margin: 10px;
             border: 2px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            border-radius: 10px;
+            width: 200px;
+            height: auto;
+            transition: transform 0.2s;
         }
-        .description {
-            font-size: 1.2rem;
-            color: #555;
-        }
-        @media (max-width: 768px) {
-            nav a {
-                font-size: 1rem;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .description {
-                font-size: 1rem;
-            }
+        img:hover {
+            transform: scale(1.1);
+            border-color: #666;
         }
     </style>
 </head>
 <body>
-    <nav>
-        <a href="#recientes">Recientes</a>
-        <a href="#todos">Todos los registros</a>
-    </nav>
-    <div class="content">
-        <h1>Imagen 1</h1>
-        <div class="image-container">
-            <img src="https://via.placeholder.com/600x400" alt="Descripción de la imagen">
-        </div>
-        <p class="description">Esta es una descripción de la imagen.</p><br><br>
+    <h1>Galería desde Base de Datos</h1>
+    <div id="image-container"></div>
+    <script>
+        async function fetchImagesByKey(key) {
+        try {
+            const response = await fetch(`./images/${key}`);
+            if (response.status === 404) {
+                console.log('No se encontraron imágenes para esta clave.');
+                return;
+            }
 
-        <h1>Imagen 2</h1>
-        <div class="image-container">
-            <img src="https://via.placeholder.com/600x400" alt="Descripción de la imagen">
-        </div>
-        <p class="description">Esta es una descripción de la imagen.</p><br><br>
+            const images = await response.json();
+            console.log('Imágenes obtenidas del backend:', images); // Log para depuración
 
-        <h1>Imagen 3</h1>
-        <div class="image-container">
-            <img src="https://via.placeholder.com/600x400" alt="Descripción de la imagen">
-        </div>
-        <p class="description">Esta es una descripción de la imagen.</p><br><br>
+            const container = document.getElementById('image-container');
+            container.innerHTML = ''; // Limpia el contenedor antes de agregar nuevas imágenes
 
-        <h1>Imagen 4</h1>
-        <div class="image-container">
-            <img src="https://via.placeholder.com/600x400" alt="Descripción de la imagen">
-        </div>
-        <p class="description">Esta es una descripción de la imagen.</p><br><br>
+            images.forEach(image => {
+                console.log('Imagen procesada:', image); // Log para depurar cada imagen
 
-        <h1>Imagen 5</h1>
-        <div class="image-container">
-            <img src="https://via.placeholder.com/600x400" alt="Descripción de la imagen">
-        </div>
-        <p class="description">Esta es una descripción de la imagen.</p><br><br>
-    </div>
+                const imgElement = document.createElement('img');
+                imgElement.src = image.base64; // Base64 de la imagen
+                imgElement.alt = image.title; // Título como texto alternativo
+                container.appendChild(imgElement);
+            });
+        } catch (error) {
+            console.error('Error al cargar las imágenes:', error);
+        }
+    }
 
+    // Clave para buscar imágenes
+    const key = "14012025"; // Cambia esto si es necesario
+    fetchImagesByKey(key); // Llama a la función con la clave
 
-
-    <script type="module">
-
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
-
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyAzuJzsEAN6d0vaeIaAfhCmzYF7P8PqphY",
-          authDomain: "modular-2025.firebaseapp.com",
-          projectId: "modular-2025",
-          storageBucket: "modular-2025.firebasestorage.app",
-          messagingSenderId: "190626714371",
-          appId: "1:190626714371:web:07e803dc0571c9bfc88f36"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-      </script> 
-</body>
-</html>
+    </script>
+    

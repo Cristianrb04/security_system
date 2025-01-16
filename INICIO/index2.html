@@ -34,32 +34,36 @@
             transform: scale(1.1);
             border-color: #666;
         }
-        .no-images {
-            color: #999;
-            font-size: 1.5rem;
-            margin-top: 20px;
+        #key-input-container {
+            margin: 20px;
+        }
+        #key-input {
+            padding: 10px;
+            font-size: 16px;
+        }
+        #key-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
     <h1>Galería de Imágenes</h1>
+    <div id="key-input-container">
+        <input id="key-input" type="text" placeholder="Ingrese la clave (key)">
+        <button id="key-button">Cargar Imágenes</button>
+    </div>
     <div id="image-gallery"></div>
     <script>
-        async function fetchImagesByKey(key) {
+        async function fetchImages(key) {
             try {
-                const response = await fetch(`./images/${key}`);
+                const response = await fetch(`/images/${key}`); // Consume el endpoint con la key
                 const images = await response.json(); // Convierte la respuesta a JSON
                 const gallery = document.getElementById('image-gallery');
                 
-                gallery.innerHTML = ''; // Limpia la galería antes de agregar nuevas imágenes
-
-                if (images.length === 0) {
-                    // Si no hay imágenes, muestra un mensaje
-                    gallery.innerHTML = '<p class="no-images">No se encontraron imágenes para esta clave.</p>';
-                    return;
-                }
-
-                // Si hay imágenes, agrégalas a la galería
+                gallery.innerHTML = ''; // Limpia la galería antes de mostrar nuevas imágenes
+                
                 images.forEach(image => {
                     const imgElement = document.createElement('img');
                     imgElement.src = image.path; // Usa el campo "path" para mostrar la imagen desde el servidor
@@ -68,13 +72,19 @@
                 });
             } catch (error) {
                 console.error('Error al cargar las imágenes:', error);
-                alert('Error al cargar las imágenes.');
+                alert('No se encontraron imágenes con esa clave.');
             }
         }
 
-        // Proporciona aquí la clave específica para filtrar las imágenes
-        const key = "14012025"; // Cambia esta clave según sea necesario
-        fetchImagesByKey(key); // Llama a la función con la clave
+        // Asignar el evento al botón
+        document.getElementById('key-button').addEventListener('click', () => {
+            const key = document.getElementById('key-input').value; // Obtener la clave del input
+            if (key) {
+                fetchImages(key); // Llamar a la función con la clave ingresada
+            } else {
+                alert('Por favor, ingrese una clave.');
+            }
+        });
     </script>
 </body>
 </html>
