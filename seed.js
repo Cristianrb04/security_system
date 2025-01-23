@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
-const fs = require('fs'); // Módulo para trabajar con el sistema de archivos
-const path = require('path'); // Módulo para manejar rutas
+const fs = require('fs'); 
+const path = require('path'); 
 const Image = require('./functions/models/image.js');
+
+// Obtener el valor de la variable key desde argumentos de la CLI
+const args = process.argv.slice(2);
+const dynamicKey = args[0] || '00000000';  // Valor por defecto si no se pasa un argumento
 
 mongoose.connect('mongodb://localhost:27017/imageDB', {
     useNewUrlParser: true,
@@ -10,26 +14,41 @@ mongoose.connect('mongodb://localhost:27017/imageDB', {
 
 const seedImages = async () => {
     try {
-        // Lee los archivos del directorio y conviértelos a base64
         const images = [
             {
-                title: 'Ladron 3',
-                url: `data:image/jpeg;base64,${fs.readFileSync(path.join(__dirname, 'foto.jpg')).toString('base64')}`,
-                path: path.join(__dirname, 'foto.jpg'),
-                key: '14012025',
+                title: 'Imagen1',
+                url: `data:image/jpeg;base64,${fs.readFileSync(path.join(__dirname, 'foto3.png')).toString('base64')}`,
+                path: path.join(__dirname, 'foto3.png'),
+                key: dynamicKey,
             },
             {
-                title: 'Ladron 4',
-                url: `data:image/jpeg;base64,${fs.readFileSync(path.join(__dirname, 'foto2.jpg')).toString('base64')}`,
-                path: path.join(__dirname, 'foto2.jpg'),
-                key: '13012025',
-                
+                title: 'Imagen2',
+                url: `data:image/jpeg;base64,${fs.readFileSync(path.join(__dirname, 'foto4.png')).toString('base64')}`,
+                path: path.join(__dirname, 'foto4.png'),
+                key: dynamicKey,
+            },
+            {
+                title: 'Imagen3',
+                url: `data:image/jpeg;base64,${fs.readFileSync(path.join(__dirname, 'foto5.png')).toString('base64')}`,
+                path: path.join(__dirname, 'foto5.png'),
+                key: dynamicKey,
+            },
+            {
+                title: 'Imagen4',
+                url: `data:image/jpeg;base64,${fs.readFileSync(path.join(__dirname, 'foto6.png')).toString('base64')}`,
+                path: path.join(__dirname, 'foto6.png'),
+                key: dynamicKey,
+            },
+            {
+                title: 'Imagen5',
+                url: `data:image/jpeg;base64,${fs.readFileSync(path.join(__dirname, 'foto7.png')).toString('base64')}`,
+                path: path.join(__dirname, 'foto7.png'),
+                key: dynamicKey,
             },
         ];
 
-        // Inserta las imágenes en la base de datos
         await Image.insertMany(images);
-        console.log('Imágenes agregadas');
+        console.log('Imágenes agregadas con key:', dynamicKey);
     } catch (error) {
         console.error('Error al agregar las imágenes:', error);
     } finally {

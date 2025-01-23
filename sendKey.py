@@ -1,21 +1,19 @@
-import requests
+import subprocess
+from datetime import datetime
 
-def send_key_to_api(key):
-    api_url = "http://localhost:5001/modular-2025/us-central1/api/home"
-    params = {"key": key}  # Agrega la clave como parámetro
-    try:
-        response = requests.get(api_url, params=params)
-        if response.status_code == 200:
-            print("Respuesta de la API:")
-            print(response.json())  # Muestra el contenido de la respuesta
-        elif response.status_code == 404:
-            print("No se encontraron imágenes para la clave proporcionada.")
-        else:
-            print(f"Error: {response.status_code}")
-            print(response.text)
-    except requests.exceptions.RequestException as e:
-        print(f"Error al conectar con la API: {e}")
+# Generar la fecha y hora actual en formato numérico (DDMMYYYYHHMM)
+fecha_hora_actual = datetime.now().strftime("%d%m%Y%H%M")
 
-# Ejemplo de uso
-key = "14012025"
-send_key_to_api(key)
+# Ejecutar el script JavaScript con la clave generada
+try:
+    result = subprocess.run(
+        ['node', 'seed.js', fecha_hora_actual],
+        capture_output=True,
+        text=True
+    )
+    
+    # Mostrar la salida del script
+    print("Salida de seed.js:", result.stdout)
+
+except Exception as e:
+    print("Error al ejecutar el script:", str(e))
